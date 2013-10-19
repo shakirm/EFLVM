@@ -1,0 +1,992 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>plotEFLVM</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-10-15"><meta name="DC.source" content="plotEFLVM.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">1. Binary Synthetic data</a></li><li><a href="#4">2. bpm with data generated from the model</a></li><li><a href="#6">3. Senate votes for BPM</a></li><li><a href="#8">4. Senate votes for EFA</a></li><li><a href="#10">5. Senate votes using Fuzzy k-means</a></li></ul></div><pre class="codeinput"><span class="keyword">function</span> plotEFLVM(experiment)
+<span class="comment">% recreate plots in chapter</span>
+<span class="comment">% Shakir, August 2012</span>
+
+[dataDir, outDir] = setupDir;
+print = 0; <span class="comment">% create pdfs</span>
+
+<span class="keyword">switch</span> experiment
+    <span class="keyword">case</span> <span class="string">'synth-efa'</span>
+</pre><h2>1. Binary Synthetic data<a name="2"></a></h2><pre class="codeinput">        dataName = <span class="string">'synth'</span>;
+        model = <span class="string">'efa'</span>;
+        K = 3;
+        seed = 1;
+
+        <span class="comment">% Get directories</span>
+        [dataDir, outDir] = setupDir;
+        fileName = sprintf([outDir <span class="string">'/%s/%s_%s_%d'</span>], dataName,model, <span class="string">'hmc'</span>, K)
+
+        <span class="comment">% Run HMC and get Results</span>
+        <span class="keyword">if</span> ~exist([fileName,<span class="string">'.mat'</span>],<span class="string">'file'</span>)
+            exptEFLVM(dataName,model,K, seed);
+        <span class="keyword">end</span>;
+        res = load(fileName);
+
+        <span class="comment">% Load Data</span>
+        dat = getBinData(dataName, dataDir);
+        [N,D] = size(dat.trueX);
+
+        keyboard
+        <span class="comment">% Sample indices to plot</span>
+        figure;
+        <span class="comment">%ix = [1, 15, 50, 120, 500, 1000];</span>
+        ix = [2, 100, 500, 1000,3000, 5000];
+        <span class="comment">% Reconstructions for various samples</span>
+        <span class="keyword">for</span> i = 1:length(ix)
+            [V, Theta , ~, ~] = extractParams(res.postDist.samples(ix(i),:), D, N, K);
+            pStar = V*Theta;
+            recon = 1./(1 + exp(-pStar))';
+            subplot(3,4,i);
+            imagesc(recon'&gt; 0.5);
+            title(sprintf(<span class="string">'Sample %d'</span>,ix(i)));
+            set(gca,<span class="string">'xticklabel'</span>,[],<span class="string">'yticklabel'</span>,[]);
+            colormap <span class="string">gray</span>;
+        <span class="keyword">end</span>;
+
+        <span class="comment">% Average recon</span>
+        pStar = zeros(N,D);
+        rng = 3000:30:5000;
+        <span class="keyword">for</span> i = rng
+            [V, Theta , ~, ~] = extractParams(res.postDist.samples(i,:), D, N, K);
+            pStar = pStar + V*Theta;
+        <span class="keyword">end</span>;
+        pStar = pStar./length(rng);
+        recon = 1./(1 + exp(-pStar))';
+        subplot(3,4,7);
+        imagesc(recon'&gt;0.5);
+        title(<span class="string">'Mean reconstruction'</span>);
+        set(gca,<span class="string">'xticklabel'</span>,[],<span class="string">'yticklabel'</span>,[]);
+
+        <span class="comment">% Noise free data</span>
+        subplot(3,4,8);
+        imagesc(dat.cleanX);
+        title(<span class="string">'True Data'</span>);
+        set(gca,<span class="string">'xticklabel'</span>,[],<span class="string">'yticklabel'</span>,[]);
+        ylabel(<span class="string">'Observations (N)'</span>);
+        xlabel(<span class="string">'Dimension (D)'</span>)
+
+        <span class="comment">% Energy (joint prob on train data)</span>
+        subplot(3,4,[9 10]);
+        semilogx(res.postDist.energy,<span class="string">'b-x'</span>,<span class="string">'LineWidth'</span>,2);
+        title(<span class="string">'Log Joint Probability (Energy)'</span>);
+        xlabel(<span class="string">'Iteration'</span>);
+        grid <span class="string">on</span>;
+
+        <span class="comment">% Predictive prob</span>
+        S = size(res.postDist.samples,1);
+        teErr = []; rmse = [];
+        <span class="keyword">for</span> i = 1:S
+            [teErr(i), rmse(i), ~] = predProbEFA_mcmc(dat, res.postDist.samples(i,:), K, 1, 1);
+        <span class="keyword">end</span>;
+        subplot(3,4,[11 12]);
+        semilogx(teErr,<span class="string">'b-x'</span>,<span class="string">'LineWidth'</span>,2)
+        title(<span class="string">'Negative Log Predictive Probability (bits)'</span>);
+        xlabel(<span class="string">'Iteration'</span>);
+        grid <span class="string">on</span>;
+
+        <span class="comment">% ML estimate of EPCA</span>
+        X = dat.trueX;
+        dims = sprintf(<span class="string">'dim=%d'</span>,K);
+        a = epca({<span class="string">'distr=''bernoulli'''</span>,dims});
+        d = data(X);
+        a.minLogL = 1e-4;
+        [dout,res] = train(a,d);
+
+        Vmap = res.H';
+        ThetaMap = res.W';
+        prod = Vmap * ThetaMap;
+
+        logistic = sigmoid(prod);
+        logP1 = log2(logistic);
+        logP2 = log2(1 - logistic);
+        idx = dat.miss;
+        val  = sum(sum(X(idx).*logP1(idx) + (1 - X(idx)).*logP2(idx))); <span class="comment">% Calc the prob</span>
+        disp(<span class="string">'Predictive Prob for MAP EPCA'</span>);
+        disp(val);
+
+        <span class="comment">% Create PDFs and move to correct directory</span>
+        print = 1
+        <span class="keyword">if</span> print
+            outName = <span class="string">'syntheticBin.eps'</span>;
+            exportfig(gcf,outName,<span class="string">'bounds'</span>,<span class="string">'tight'</span>,<span class="string">'color'</span>,<span class="string">'rgb'</span>,<span class="string">'lockAxes'</span>,0);
+            eps2pdf(outName)
+            system(sprintf(<span class="string">'mv %s %s/pdf'</span>,outName,outDir));
+            ix = strfind(outName,<span class="string">'.'</span>);
+            system(sprintf(<span class="string">'mv %s %s/pdf'</span>,strcat(outName(1:ix),<span class="string">'pdf'</span>),outDir));
+        <span class="keyword">end</span>;
+</pre><pre class="codeinput">    <span class="keyword">case</span> <span class="string">'synth-bpm'</span>
+</pre><h2>2. bpm with data generated from the model<a name="4"></a></h2><pre class="codeinput">        dataName = <span class="string">'bpmmodel'</span>;
+        model = <span class="string">'bpm'</span>;
+        K = 3;
+        seed = 1;
+
+        <span class="comment">% Get directories</span>
+        [dataDir, outDir] = setupDir;
+        fileName = sprintf([outDir <span class="string">'/%s/%s_%s_%d'</span>], dataName,model, <span class="string">'hmc'</span>, K)
+
+        <span class="comment">% Run HMC and get Results</span>
+        <span class="keyword">if</span> ~exist([fileName,<span class="string">'.mat'</span>],<span class="string">'file'</span>)
+            exptEFLVM(dataName,model,K, seed);
+        <span class="keyword">end</span>;
+        res = load(fileName);
+
+        <span class="comment">% Load Data</span>
+        dat = getBinData(dataName, dataDir);
+        [N,D] = size(dat.X);
+
+        figure;
+        [S,LL] = size(res.postDist.samples);
+        gg = zeros(N,N);
+        burnin = 2000;
+        thin = 50;
+        rng = burnin:thin:S;
+        length(rng)
+        <span class="keyword">for</span> i = rng
+            omega = res.postDist.samples(i,:);
+            [~, ~, pi, ~] = extractParams_bpm(omega, K, N, D);
+            gg = gg + pi*pi';
+        <span class="keyword">end</span>;
+        GG = gg/length(rng);
+        TP = dat.truePi*dat.truePi';
+
+        h1 = subplot(131);
+        imagesc(TP,[0 1]);
+        title(<span class="string">'True U_T'</span>,<span class="string">'FontSize'</span>,14, <span class="string">'FontWeight'</span>,<span class="string">'bold'</span>)
+        <span class="comment">%xlabel('Observations');</span>
+        ylabel(<span class="string">'Observations'</span>,<span class="string">'FontSize'</span>,14, <span class="string">'FontWeight'</span>,<span class="string">'bold'</span>);
+        set(gca,<span class="string">'xticklabel'</span>,[],<span class="string">'yticklabel'</span>,[]);
+        ht = colorbar(<span class="string">'location'</span>,<span class="string">'SouthOutside'</span>);
+        set(ht,<span class="string">'FontSize'</span>,12);
+
+        h2 = subplot(132);
+        imagesc(GG,[0 1]);
+        title(<span class="string">'Inferred U_L'</span>,<span class="string">'FontSize'</span>,14, <span class="string">'FontWeight'</span>,<span class="string">'bold'</span>)
+        set(gca,<span class="string">'xticklabel'</span>,[],<span class="string">'yticklabel'</span>,[]);
+        colormap <span class="string">gray</span>;
+        ht = colorbar(<span class="string">'location'</span>,<span class="string">'SouthOutside'</span>);
+        set(ht,<span class="string">'FontSize'</span>,12);
+
+
+        diff = abs(GG(:) - TP(:));
+        rng = 0.1:0.1:0.5;
+        subplot(133);
+        counts = histc(diff,rng);
+        perc = counts./sum(counts);
+        disp([cumsum(perc)*100 rng']); <span class="comment">% PPrint table instead</span>
+        bar(rng,perc,<span class="string">'FaceColor'</span>,<span class="string">'b'</span>);
+        title(<span class="string">'Histogram of Differences |U_T - U_L|'</span>,<span class="string">'FontSize'</span>,14, <span class="string">'FontWeight'</span>,<span class="string">'bold'</span>);
+        set(gca,<span class="string">'xtick'</span>,rng,<span class="string">'xticklabel'</span>,rng, <span class="string">'FontSize'</span>,12)
+        xlim([0 0.55]);
+        xlabel(<span class="string">'Difference threshold'</span>,<span class="string">'FontSize'</span>,14, <span class="string">'FontWeight'</span>,<span class="string">'bold'</span>);
+        ylabel(<span class="string">'% entries in bin'</span>,<span class="string">'FontSize'</span>,14, <span class="string">'FontWeight'</span>,<span class="string">'bold'</span>)
+
+        <span class="comment">% Create PDFs and move to correct directory</span>
+        print = 1
+        <span class="keyword">if</span> print
+            outName = <span class="string">'bpmSynthetic.eps'</span>;
+            exportfig(gcf,outName,<span class="string">'bounds'</span>,<span class="string">'tight'</span>,<span class="string">'color'</span>,<span class="string">'rgb'</span>,<span class="string">'lockAxes'</span>,0);
+            eps2pdf(outName)
+            system(sprintf(<span class="string">'mv %s %s/pdf'</span>,outName,outDir));
+            ix = strfind(outName,<span class="string">'.'</span>);
+            system(sprintf(<span class="string">'mv %s %s/pdf'</span>,strcat(outName(1:ix),<span class="string">'pdf'</span>),outDir));
+        <span class="keyword">end</span>;
+</pre><pre class="codeinput">    <span class="keyword">case</span> <span class="string">'votes-bpm'</span>
+</pre><h2>3. Senate votes for BPM<a name="6"></a></h2><pre class="codeinput">        dataName = <span class="string">'votes'</span>;
+        model = <span class="string">'bpm'</span>;
+        K = 2;
+        seed = 1;
+
+        <span class="comment">% Get directories</span>
+        [dataDir, outDir] = setupDir;
+        fileName = sprintf([outDir <span class="string">'/%s/%s_%s_%d'</span>], dataName,model, <span class="string">'hmc'</span>, K)
+
+        <span class="comment">% Run HMC and get Results</span>
+        <span class="keyword">if</span> ~exist([fileName,<span class="string">'.mat'</span>],<span class="string">'file'</span>)
+            exptEFLVM(dataName,model,K, seed);
+        <span class="keyword">end</span>;
+        res = load(fileName);
+
+        <span class="comment">% Load Data</span>
+        dat = getBinData(dataName, dataDir);
+        [N,D] = size(dat.X);
+
+        <span class="keyword">for</span> i = 1:N
+            <span class="keyword">if</span> strfind(dat.lab{i},<span class="string">'(R-'</span>)
+                RD(i) = 1;
+            <span class="keyword">elseif</span> strfind(dat.lab{i},<span class="string">'(D-'</span>)
+                RD(i) = 2;
+            <span class="keyword">elseif</span> strfind(dat.lab{i},<span class="string">'(I-'</span>)
+                RD(i) = 3;
+            <span class="keyword">else</span>
+                RD(i) = 4;
+            <span class="keyword">end</span>;
+        <span class="keyword">end</span>;
+
+        [S,LL] = size(res.postDist.samples);
+        omega = res.postDist.samples(end,:);
+        [a, rho, pi, theta] = extractParams_bpm(omega, K, N, D);
+        [P, Q] = size(pi);
+        [v, ix] = sort(pi(:,2));
+        pl(:,1) = 1:100;
+        pl(:,2) = v.*100;
+
+        figure;
+        plot(v,<span class="string">'c'</span>,<span class="string">'LineWidth'</span>,10)
+        hold <span class="string">on</span>
+        cols = {<span class="string">'r'</span>,<span class="string">'b'</span>,<span class="string">'m'</span>,<span class="string">'k'</span>};
+        <span class="keyword">for</span> i = 1:100
+            tt = dat.lab(ix(i));
+            cc = cols{RD(ix(i))};
+            text(i,v(i)-0.1*length(tt),tt,<span class="string">'Rotation'</span>,90,<span class="string">'Color'</span>,cc,<span class="string">'FontWeight'</span>,<span class="string">'bold'</span>, <span class="string">'FontSize'</span>,11);
+            hold <span class="string">on</span>;
+        <span class="keyword">end</span>;
+        ylim([-0.1, 1.3])
+        xlim([-1 101])
+        grid <span class="string">on</span>
+        ylabel(<span class="string">'Partial Membership'</span>,<span class="string">'FontSize'</span>,14, <span class="string">'FontWeight'</span>,<span class="string">'bold'</span>);
+        xlabel(<span class="string">'Senator'</span>,<span class="string">'FontSize'</span>,14, <span class="string">'FontWeight'</span>,<span class="string">'bold'</span>);
+
+<span class="comment">%         figure;</span>
+<span class="comment">%         yy = [NaN*ones(100,1), pl(:,2)];</span>
+<span class="comment">%         plot(pl','LineWidth',1.5,'Color','b');</span>
+<span class="comment">%         hold on;</span>
+<span class="comment">%         plot(yy','o','MarkerFaceColor','k');</span>
+<span class="comment">%         box off</span>
+<span class="comment">%         set(gca,'ytick',1:100,'yticklabel',dat.lab(ix),'FontSize',9,'tickDir','out');</span>
+<span class="comment">%         set(gca,'xticklabel',[])</span>
+<span class="comment">%         xlabel([]); ylabel([]);</span>
+
+        <span class="comment">% Show predictive probs</span>
+        pStar = sigmoid(pi*theta);
+        <span class="keyword">for</span> i = 1:100
+            hh = -((dat.X ==1).*log2(pStar) + (dat.X == 0).*log2(1-pStar));
+        <span class="keyword">end</span>;
+        hh2 = sum(hh,2);
+        disp(<span class="string">'Pred Prob (nats): mean min median max'</span>)
+        disp([mean(hh2) min(hh2) median(hh2) max(hh2)]);
+        disp(<span class="string">'Outcome (nats)'</span>);
+        disp(hh2(end));
+
+        <span class="comment">% Create PDFs and move to correct directory</span>
+        print = 0
+        <span class="keyword">if</span> print
+            outName = <span class="string">'bpmVotes.eps'</span>;
+            exportfig(gcf,outName,<span class="string">'bounds'</span>,<span class="string">'tight'</span>,<span class="string">'color'</span>,<span class="string">'rgb'</span>,<span class="string">'lockAxes'</span>,0);
+            eps2pdf(outName)
+            system(sprintf(<span class="string">'mv %s %s/pdf'</span>,outName,outDir));
+            ix = strfind(outName,<span class="string">'.'</span>);
+            system(sprintf(<span class="string">'mv %s %s/pdf'</span>,strcat(outName(1:ix),<span class="string">'pdf'</span>),outDir));
+        <span class="keyword">end</span>;
+</pre><pre class="codeinput">    <span class="keyword">case</span> <span class="string">'votes-efa'</span>
+</pre><h2>4. Senate votes for EFA<a name="8"></a></h2><pre class="codeinput">        dataName = <span class="string">'votes'</span>;
+        model = <span class="string">'efa'</span>;
+        K = 2;
+        seed = 1;
+
+        <span class="comment">% Get directories</span>
+        [dataDir, outDir] = setupDir;
+        fileName = sprintf([outDir <span class="string">'/%s/%s_%s_%d'</span>], dataName,model, <span class="string">'hmc'</span>, K);
+
+        <span class="comment">% Run HMC and get Results</span>
+        <span class="keyword">if</span> ~exist([fileName,<span class="string">'.mat'</span>],<span class="string">'file'</span>)
+            exptEFLVM(dataName,model,K, seed);
+        <span class="keyword">end</span>;
+        res = load(fileName);
+
+        <span class="comment">% Load Data</span>
+        dat = getBinData(dataName, dataDir);
+        X = dat.X;
+        [N,D] = size(dat.X);
+
+        [S,LL] = size(res.postDist.samples);
+
+        omega = res.postDist.samples(end,:);
+        [V, Theta , Sigma, mu] = extractParams(omega,D, N, K);
+
+        <span class="keyword">for</span> i = 1:N
+            <span class="keyword">if</span> strfind(dat.lab{i},<span class="string">'(R-'</span>)
+                RD(i) = 1;
+            <span class="keyword">elseif</span> strfind(dat.lab{i},<span class="string">'(D-'</span>)
+                RD(i) = 2;
+            <span class="keyword">elseif</span> strfind(dat.lab{i},<span class="string">'(I-'</span>)
+                RD(i) = 3;
+            <span class="keyword">else</span>
+                RD(i) = 4;
+            <span class="keyword">end</span>;
+        <span class="keyword">end</span>;
+
+        <span class="comment">% Compute Marginal Covariance</span>
+        burnin = S;
+        thin = 1;
+        rng = burnin:thin:S;
+        didx = 30;
+        prob = eye(didx,didx);
+        <span class="keyword">for</span> s = rng
+            s
+            <span class="keyword">for</span> i = 1:didx
+                <span class="keyword">for</span> j = 1:didx
+                    omega = res.postDist.samples(s,:);
+                    [V, Theta , Sigma, mu] = extractParams(omega,D, N, K);
+                    pStar = mu'*Theta;
+                    <span class="keyword">if</span> i ~= j
+                        prob(i,j) = sigmoid(pStar(i)).*sigmoid(pStar(j));
+                        prob(i,j) = prob(i,j) + (1-sigmoid(pStar(i)))*(1-sigmoid(pStar(j)));
+                    <span class="keyword">end</span>;
+                <span class="keyword">end</span>;
+            <span class="keyword">end</span>;
+        <span class="keyword">end</span>;
+
+        prob = prob./length(rng);
+        <span class="comment">% -- Generate plot</span>
+        <span class="comment">% Visualise latent embedding</span>
+        subplot(121);
+        reps = RD==1;
+        plot(V(reps,1), V(reps,2),<span class="string">'rs'</span>, <span class="string">'LineWidth'</span>,1.5,<span class="string">'MarkerSize'</span>,14);
+        hold <span class="string">on</span>;
+        dems = RD==2;
+        plot(V(dems,1), V(dems,2),<span class="string">'bo'</span>, <span class="string">'LineWidth'</span>,1.5,<span class="string">'MarkerSize'</span>,14);
+        hold <span class="string">on</span>
+        oth = RD==3;
+        plot(V(oth,1), V(oth,2),<span class="string">'gx'</span>, <span class="string">'LineWidth'</span>,1.5,<span class="string">'MarkerSize'</span>,14);
+        hold <span class="string">on</span>;
+        oth = RD==4;
+        plot(V(oth,1), V(oth,2),<span class="string">'k*'</span>, <span class="string">'LineWidth'</span>,1.5,<span class="string">'MarkerSize'</span>,14);
+        title(<span class="string">'Latent Factor Embedding'</span>,<span class="string">'FontSize'</span>,14, <span class="string">'FontWeight'</span>,<span class="string">'bold'</span>);
+        xlabel(<span class="string">'Factor 1'</span>,<span class="string">'FontSize'</span>,14, <span class="string">'FontWeight'</span>,<span class="string">'bold'</span>);
+        ylabel(<span class="string">'Factor 2'</span>,<span class="string">'FontSize'</span>,14, <span class="string">'FontWeight'</span>,<span class="string">'bold'</span>);
+        legend({<span class="string">'Republicans'</span>,<span class="string">'Democrats'</span>,<span class="string">'Independent'</span>,<span class="string">'Outcome'</span>});
+        set(gca,<span class="string">'fontsize'</span>,14,<span class="string">'FontWeight'</span>,<span class="string">'bold'</span>);
+
+        subplot(122);
+        imagesc(prob(1:30,1:30));
+        colorbar;
+        title(<span class="string">'Prob(x_i = x_j)'</span>,<span class="string">'FontSize'</span>,14, <span class="string">'FontWeight'</span>,<span class="string">'bold'</span>);
+        xlabel(<span class="string">'Roll Call'</span>,<span class="string">'FontSize'</span>,14, <span class="string">'FontWeight'</span>,<span class="string">'bold'</span>);
+        ylabel(<span class="string">'Roll Call'</span>,<span class="string">'FontSize'</span>,14, <span class="string">'FontWeight'</span>,<span class="string">'bold'</span>);
+        caxis([0 1]);
+        hc = colorbar;
+        set(hc, <span class="string">'ytick'</span>, [0 0.2 0.4 0.6 0.8 1],<span class="string">'fontsize'</span>,11,<span class="string">'color'</span>,[.3 .3 .3]);
+        set(gca,<span class="string">'fontsize'</span>,12,<span class="string">'FontWeight'</span>,<span class="string">'bold'</span>);
+
+        <span class="comment">% Show predictive probs</span>
+        pStar = sigmoid(V*Theta);
+        X = dat.X;
+        <span class="keyword">for</span> i = 1:100
+            hh = -((X ==1).*log2(pStar) + (X == 0).*log2(1-pStar));
+        <span class="keyword">end</span>;
+        hh2 = sum(hh,2);
+        disp(<span class="string">'Pred Prob (nats): mean min median max'</span>)
+        disp([mean(hh2) min(hh2) median(hh2) max(hh2)]);
+        disp(<span class="string">'Outcome (nats)'</span>);
+        disp(hh2(end));
+
+        <span class="comment">% Create PDFs and move to correct directory</span>
+        <span class="keyword">if</span> print
+            outName = <span class="string">'efaVotes.eps'</span>;
+            exportfig(gcf,outName,<span class="string">'bounds'</span>,<span class="string">'tight'</span>,<span class="string">'color'</span>,<span class="string">'rgb'</span>,<span class="string">'lockAxes'</span>,0);
+            eps2pdf(outName)
+            system(sprintf(<span class="string">'mv %s %s/pdf'</span>,outName,outDir));
+            ix = strfind(outName,<span class="string">'.'</span>);
+            system(sprintf(<span class="string">'mv %s %s/pdf'</span>,strcat(outName(1:ix),<span class="string">'pdf'</span>),outDir));
+        <span class="keyword">end</span>;
+</pre><pre class="codeinput">    <span class="keyword">case</span> <span class="string">'fuzzykm'</span>
+</pre><h2>5. Senate votes using Fuzzy k-means<a name="10"></a></h2><pre class="codeinput">        dataName = <span class="string">'votes'</span>;
+        model = <span class="string">'fuzzykm'</span>;
+        K = 2;
+        seed = 1;
+
+        <span class="comment">% Get directories</span>
+        [dataDir, outDir] = setupDir;
+        fileName = sprintf([outDir <span class="string">'/%s/%s_%s_%d'</span>], dataName,model, <span class="string">'hmc'</span>, K);
+
+        <span class="comment">% Load Data</span>
+        dat = getBinData(dataName, dataDir);
+        [N,D] = size(dat.X);
+        X = dat.X';
+        idx0 = X == 0;
+        idxm = X == -1;
+        X(idx0) = -1;
+        X(idxm) = 0;
+
+        maxiter=200;
+        toldif=0.000001;
+        distype=1; <span class="comment">%   distance type:        1 = euclidean, 2 = diagonal, 3 = mahalanobis</span>
+        scatter=0.2;
+        ntry=1;
+
+        res = [];
+        coords = [83, 87, 100];
+        res(:,1) = coords';
+        rng = 1.1:0.1:3;
+        <span class="keyword">for</span> i = 1:length(rng)
+            phi = rng(i);
+            [U, centroid, dist, W, obj] = run_fuzme(K,X,phi,maxiter,distype,toldif,scatter,ntry);
+            res(1,i+1) = max(U(coords(1),1), U(coords(1),2));
+            res(2,i+1) = min(U(coords(2),1), U(coords(2),2));
+            res(3,i+1) = min(U(coords(3),1), U(coords(3),2));
+        <span class="keyword">end</span>;
+
+        col = <span class="string">'brg'</span>;
+        <span class="keyword">for</span> i = 1:3
+        plot(rng,res(i,2:end)',<span class="string">'-s'</span>,<span class="string">'LineWidth'</span>,2,<span class="string">'color'</span>,col(i));
+        hold <span class="string">on</span>;
+        <span class="keyword">end</span>;
+        xlim([1 3.1]);
+        ylim([-0.05 1.05]);
+        ylabel(<span class="string">'Partial Membership'</span>,<span class="string">'FontSize'</span>,14, <span class="string">'FontWeight'</span>,<span class="string">'bold'</span>);
+        xlabel(<span class="string">'Fuzzy Exponent'</span>,<span class="string">'FontSize'</span>,14, <span class="string">'FontWeight'</span>,<span class="string">'bold'</span>);
+        set(gca,<span class="string">'fontsize'</span>,12,<span class="string">'FontWeight'</span>,<span class="string">'bold'</span>);
+        grid <span class="string">on</span>
+        legend(dat.lab(coords));
+
+        keyboard
+        <span class="comment">% Create PDFs and move to correct directory</span>
+        print = 1
+        <span class="keyword">if</span> print
+            outName = <span class="string">'fuzzyVotes.eps'</span>;
+            exportfig(gcf,outName,<span class="string">'bounds'</span>,<span class="string">'tight'</span>,<span class="string">'color'</span>,<span class="string">'rgb'</span>,<span class="string">'lockAxes'</span>,0);
+            eps2pdf(outName)
+            system(sprintf(<span class="string">'mv %s %s/pdf'</span>,outName,outDir));
+            ix = strfind(outName,<span class="string">'.'</span>);
+            system(sprintf(<span class="string">'mv %s %s/pdf'</span>,strcat(outName(1:ix),<span class="string">'pdf'</span>),outDir));
+        <span class="keyword">end</span>;
+</pre><pre class="codeinput">    <span class="keyword">otherwise</span>
+        error(<span class="string">'no plotting routine'</span>);
+<span class="keyword">end</span>;
+</pre><pre class="codeoutput">Error using plotEFLVM (line 8)
+Not enough input arguments.
+</pre><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+function plotEFLVM(experiment)
+% recreate plots in chapter
+% Shakir, August 2012
+
+[dataDir, outDir] = setupDir;
+print = 0; % create pdfs
+
+switch experiment
+    case 'synth-efa'
+        %% 1. Binary Synthetic data
+        dataName = 'synth';
+        model = 'efa';
+        K = 3;
+        seed = 1;
+        
+        % Get directories
+        [dataDir, outDir] = setupDir;
+        fileName = sprintf([outDir '/%s/%s_%s_%d'], dataName,model, 'hmc', K)
+        
+        % Run HMC and get Results
+        if ~exist([fileName,'.mat'],'file')
+            exptEFLVM(dataName,model,K, seed);
+        end;
+        res = load(fileName);
+        
+        % Load Data
+        dat = getBinData(dataName, dataDir);
+        [N,D] = size(dat.trueX);
+        
+        keyboard
+        % Sample indices to plot
+        figure;
+        %ix = [1, 15, 50, 120, 500, 1000];
+        ix = [2, 100, 500, 1000,3000, 5000];
+        % Reconstructions for various samples
+        for i = 1:length(ix)
+            [V, Theta , ~, ~] = extractParams(res.postDist.samples(ix(i),:), D, N, K);
+            pStar = V*Theta;
+            recon = 1./(1 + exp(-pStar))';
+            subplot(3,4,i);
+            imagesc(recon'> 0.5);
+            title(sprintf('Sample %d',ix(i)));
+            set(gca,'xticklabel',[],'yticklabel',[]);
+            colormap gray;
+        end;
+        
+        % Average recon
+        pStar = zeros(N,D);
+        rng = 3000:30:5000;
+        for i = rng
+            [V, Theta , ~, ~] = extractParams(res.postDist.samples(i,:), D, N, K);
+            pStar = pStar + V*Theta;
+        end;
+        pStar = pStar./length(rng);
+        recon = 1./(1 + exp(-pStar))';
+        subplot(3,4,7);
+        imagesc(recon'>0.5);
+        title('Mean reconstruction');
+        set(gca,'xticklabel',[],'yticklabel',[]);
+        
+        % Noise free data
+        subplot(3,4,8);
+        imagesc(dat.cleanX);
+        title('True Data');
+        set(gca,'xticklabel',[],'yticklabel',[]);
+        ylabel('Observations (N)');
+        xlabel('Dimension (D)')
+        
+        % Energy (joint prob on train data)
+        subplot(3,4,[9 10]);
+        semilogx(res.postDist.energy,'b-x','LineWidth',2);
+        title('Log Joint Probability (Energy)');
+        xlabel('Iteration');
+        grid on;
+        
+        % Predictive prob
+        S = size(res.postDist.samples,1);
+        teErr = []; rmse = [];
+        for i = 1:S
+            [teErr(i), rmse(i), ~] = predProbEFA_mcmc(dat, res.postDist.samples(i,:), K, 1, 1);
+        end;
+        subplot(3,4,[11 12]);
+        semilogx(teErr,'b-x','LineWidth',2)
+        title('Negative Log Predictive Probability (bits)');
+        xlabel('Iteration');
+        grid on;
+        
+        % ML estimate of EPCA
+        X = dat.trueX;
+        dims = sprintf('dim=%d',K);
+        a = epca({'distr=''bernoulli''',dims});
+        d = data(X);
+        a.minLogL = 1e-4;
+        [dout,res] = train(a,d);
+        
+        Vmap = res.H';
+        ThetaMap = res.W';
+        prod = Vmap * ThetaMap;
+        
+        logistic = sigmoid(prod);
+        logP1 = log2(logistic);
+        logP2 = log2(1 - logistic);
+        idx = dat.miss;
+        val  = sum(sum(X(idx).*logP1(idx) + (1 - X(idx)).*logP2(idx))); % Calc the prob
+        disp('Predictive Prob for MAP EPCA');
+        disp(val);
+        
+        % Create PDFs and move to correct directory
+        print = 1
+        if print
+            outName = 'syntheticBin.eps';
+            exportfig(gcf,outName,'bounds','tight','color','rgb','lockAxes',0);
+            eps2pdf(outName)
+            system(sprintf('mv %s %s/pdf',outName,outDir));
+            ix = strfind(outName,'.');
+            system(sprintf('mv %s %s/pdf',strcat(outName(1:ix),'pdf'),outDir));
+        end;
+        
+    case 'synth-bpm'
+        %% 2. bpm with data generated from the model
+        dataName = 'bpmmodel';
+        model = 'bpm';
+        K = 3;
+        seed = 1;
+        
+        % Get directories
+        [dataDir, outDir] = setupDir;
+        fileName = sprintf([outDir '/%s/%s_%s_%d'], dataName,model, 'hmc', K)
+        
+        % Run HMC and get Results
+        if ~exist([fileName,'.mat'],'file')
+            exptEFLVM(dataName,model,K, seed);
+        end;
+        res = load(fileName);
+        
+        % Load Data
+        dat = getBinData(dataName, dataDir);
+        [N,D] = size(dat.X);
+        
+        figure;
+        [S,LL] = size(res.postDist.samples);
+        gg = zeros(N,N);
+        burnin = 2000;
+        thin = 50;
+        rng = burnin:thin:S;
+        length(rng)
+        for i = rng
+            omega = res.postDist.samples(i,:);
+            [~, ~, pi, ~] = extractParams_bpm(omega, K, N, D);
+            gg = gg + pi*pi';
+        end;
+        GG = gg/length(rng);
+        TP = dat.truePi*dat.truePi';
+        
+        h1 = subplot(131);
+        imagesc(TP,[0 1]);
+        title('True U_T','FontSize',14, 'FontWeight','bold')
+        %xlabel('Observations');
+        ylabel('Observations','FontSize',14, 'FontWeight','bold');
+        set(gca,'xticklabel',[],'yticklabel',[]);
+        ht = colorbar('location','SouthOutside'); 
+        set(ht,'FontSize',12);
+        
+        h2 = subplot(132);
+        imagesc(GG,[0 1]);
+        title('Inferred U_L','FontSize',14, 'FontWeight','bold')
+        set(gca,'xticklabel',[],'yticklabel',[]);
+        colormap gray; 
+        ht = colorbar('location','SouthOutside'); 
+        set(ht,'FontSize',12);
+        
+        
+        diff = abs(GG(:) - TP(:));
+        rng = 0.1:0.1:0.5;
+        subplot(133);
+        counts = histc(diff,rng);
+        perc = counts./sum(counts);
+        disp([cumsum(perc)*100 rng']); % PPrint table instead
+        bar(rng,perc,'FaceColor','b');
+        title('Histogram of Differences |U_T - U_L|','FontSize',14, 'FontWeight','bold');
+        set(gca,'xtick',rng,'xticklabel',rng, 'FontSize',12)
+        xlim([0 0.55]); 
+        xlabel('Difference threshold','FontSize',14, 'FontWeight','bold');
+        ylabel('% entries in bin','FontSize',14, 'FontWeight','bold')
+        
+        % Create PDFs and move to correct directory
+        print = 1
+        if print
+            outName = 'bpmSynthetic.eps';
+            exportfig(gcf,outName,'bounds','tight','color','rgb','lockAxes',0);
+            eps2pdf(outName)
+            system(sprintf('mv %s %s/pdf',outName,outDir));
+            ix = strfind(outName,'.');
+            system(sprintf('mv %s %s/pdf',strcat(outName(1:ix),'pdf'),outDir));
+        end;
+        
+    case 'votes-bpm'
+        %% 3. Senate votes for BPM
+        dataName = 'votes';
+        model = 'bpm';
+        K = 2;
+        seed = 1;
+        
+        % Get directories
+        [dataDir, outDir] = setupDir;
+        fileName = sprintf([outDir '/%s/%s_%s_%d'], dataName,model, 'hmc', K)
+        
+        % Run HMC and get Results
+        if ~exist([fileName,'.mat'],'file')
+            exptEFLVM(dataName,model,K, seed);
+        end;
+        res = load(fileName);
+        
+        % Load Data
+        dat = getBinData(dataName, dataDir);
+        [N,D] = size(dat.X);
+        
+        for i = 1:N
+            if strfind(dat.lab{i},'(R-')
+                RD(i) = 1;
+            elseif strfind(dat.lab{i},'(D-')
+                RD(i) = 2;
+            elseif strfind(dat.lab{i},'(I-')
+                RD(i) = 3;
+            else
+                RD(i) = 4;
+            end;
+        end;
+        
+        [S,LL] = size(res.postDist.samples);
+        omega = res.postDist.samples(end,:);
+        [a, rho, pi, theta] = extractParams_bpm(omega, K, N, D);
+        [P, Q] = size(pi);
+        [v, ix] = sort(pi(:,2));
+        pl(:,1) = 1:100;
+        pl(:,2) = v.*100;
+        
+        figure;
+        plot(v,'c','LineWidth',10)
+        hold on
+        cols = {'r','b','m','k'};
+        for i = 1:100
+            tt = dat.lab(ix(i));
+            cc = cols{RD(ix(i))};
+            text(i,v(i)-0.1*length(tt),tt,'Rotation',90,'Color',cc,'FontWeight','bold', 'FontSize',11);
+            hold on;
+        end;
+        ylim([-0.1, 1.3])
+        xlim([-1 101])
+        grid on
+        ylabel('Partial Membership','FontSize',14, 'FontWeight','bold');
+        xlabel('Senator','FontSize',14, 'FontWeight','bold');
+        
+%         figure;
+%         yy = [NaN*ones(100,1), pl(:,2)];
+%         plot(pl','LineWidth',1.5,'Color','b');
+%         hold on;
+%         plot(yy','o','MarkerFaceColor','k');
+%         box off
+%         set(gca,'ytick',1:100,'yticklabel',dat.lab(ix),'FontSize',9,'tickDir','out');
+%         set(gca,'xticklabel',[])
+%         xlabel([]); ylabel([]);
+        
+        % Show predictive probs
+        pStar = sigmoid(pi*theta);
+        for i = 1:100
+            hh = -((dat.X ==1).*log2(pStar) + (dat.X == 0).*log2(1-pStar));
+        end;
+        hh2 = sum(hh,2);
+        disp('Pred Prob (nats): mean min median max')
+        disp([mean(hh2) min(hh2) median(hh2) max(hh2)]);
+        disp('Outcome (nats)');
+        disp(hh2(end));
+        
+        % Create PDFs and move to correct directory
+        print = 0
+        if print
+            outName = 'bpmVotes.eps';
+            exportfig(gcf,outName,'bounds','tight','color','rgb','lockAxes',0);
+            eps2pdf(outName)
+            system(sprintf('mv %s %s/pdf',outName,outDir));
+            ix = strfind(outName,'.');
+            system(sprintf('mv %s %s/pdf',strcat(outName(1:ix),'pdf'),outDir));
+        end;
+        
+    case 'votes-efa'
+        %% 4. Senate votes for EFA
+        dataName = 'votes';
+        model = 'efa';
+        K = 2;
+        seed = 1;
+        
+        % Get directories
+        [dataDir, outDir] = setupDir;
+        fileName = sprintf([outDir '/%s/%s_%s_%d'], dataName,model, 'hmc', K);
+        
+        % Run HMC and get Results
+        if ~exist([fileName,'.mat'],'file')
+            exptEFLVM(dataName,model,K, seed);
+        end;
+        res = load(fileName);
+        
+        % Load Data
+        dat = getBinData(dataName, dataDir);
+        X = dat.X;
+        [N,D] = size(dat.X);
+        
+        [S,LL] = size(res.postDist.samples);
+        
+        omega = res.postDist.samples(end,:);
+        [V, Theta , Sigma, mu] = extractParams(omega,D, N, K);
+        
+        for i = 1:N
+            if strfind(dat.lab{i},'(R-')
+                RD(i) = 1;
+            elseif strfind(dat.lab{i},'(D-')
+                RD(i) = 2;
+            elseif strfind(dat.lab{i},'(I-')
+                RD(i) = 3;
+            else
+                RD(i) = 4;
+            end;
+        end;
+        
+        % Compute Marginal Covariance
+        burnin = S;
+        thin = 1;
+        rng = burnin:thin:S;
+        didx = 30;
+        prob = eye(didx,didx);
+        for s = rng
+            s
+            for i = 1:didx
+                for j = 1:didx
+                    omega = res.postDist.samples(s,:);
+                    [V, Theta , Sigma, mu] = extractParams(omega,D, N, K);
+                    pStar = mu'*Theta;
+                    if i ~= j
+                        prob(i,j) = sigmoid(pStar(i)).*sigmoid(pStar(j));
+                        prob(i,j) = prob(i,j) + (1-sigmoid(pStar(i)))*(1-sigmoid(pStar(j)));
+                    end;
+                end;
+            end;
+        end;
+        
+        prob = prob./length(rng);
+        % REPLACE_WITH_DASH_DASH Generate plot
+        % Visualise latent embedding
+        subplot(121);
+        reps = RD==1;
+        plot(V(reps,1), V(reps,2),'rs', 'LineWidth',1.5,'MarkerSize',14);
+        hold on;
+        dems = RD==2;
+        plot(V(dems,1), V(dems,2),'bo', 'LineWidth',1.5,'MarkerSize',14);
+        hold on
+        oth = RD==3;
+        plot(V(oth,1), V(oth,2),'gx', 'LineWidth',1.5,'MarkerSize',14);
+        hold on;
+        oth = RD==4;
+        plot(V(oth,1), V(oth,2),'k*', 'LineWidth',1.5,'MarkerSize',14);
+        title('Latent Factor Embedding','FontSize',14, 'FontWeight','bold');
+        xlabel('Factor 1','FontSize',14, 'FontWeight','bold');
+        ylabel('Factor 2','FontSize',14, 'FontWeight','bold');
+        legend({'Republicans','Democrats','Independent','Outcome'});
+        set(gca,'fontsize',14,'FontWeight','bold');
+        
+        subplot(122);
+        imagesc(prob(1:30,1:30));
+        colorbar;
+        title('Prob(x_i = x_j)','FontSize',14, 'FontWeight','bold');
+        xlabel('Roll Call','FontSize',14, 'FontWeight','bold');
+        ylabel('Roll Call','FontSize',14, 'FontWeight','bold');
+        caxis([0 1]);
+        hc = colorbar;
+        set(hc, 'ytick', [0 0.2 0.4 0.6 0.8 1],'fontsize',11,'color',[.3 .3 .3]);
+        set(gca,'fontsize',12,'FontWeight','bold');
+        
+        % Show predictive probs
+        pStar = sigmoid(V*Theta);
+        X = dat.X;
+        for i = 1:100
+            hh = -((X ==1).*log2(pStar) + (X == 0).*log2(1-pStar));
+        end;
+        hh2 = sum(hh,2);
+        disp('Pred Prob (nats): mean min median max')
+        disp([mean(hh2) min(hh2) median(hh2) max(hh2)]);
+        disp('Outcome (nats)');
+        disp(hh2(end));
+        
+        % Create PDFs and move to correct directory
+        if print
+            outName = 'efaVotes.eps';
+            exportfig(gcf,outName,'bounds','tight','color','rgb','lockAxes',0);
+            eps2pdf(outName)
+            system(sprintf('mv %s %s/pdf',outName,outDir));
+            ix = strfind(outName,'.');
+            system(sprintf('mv %s %s/pdf',strcat(outName(1:ix),'pdf'),outDir));
+        end;
+        
+    case 'fuzzykm'
+        %% 5. Senate votes using Fuzzy k-means
+        dataName = 'votes';
+        model = 'fuzzykm';
+        K = 2;
+        seed = 1;
+        
+        % Get directories
+        [dataDir, outDir] = setupDir;
+        fileName = sprintf([outDir '/%s/%s_%s_%d'], dataName,model, 'hmc', K);
+        
+        % Load Data
+        dat = getBinData(dataName, dataDir);
+        [N,D] = size(dat.X);
+        X = dat.X';
+        idx0 = X == 0;
+        idxm = X == -1;
+        X(idx0) = -1;
+        X(idxm) = 0;
+        
+        maxiter=200;
+        toldif=0.000001;
+        distype=1; %   distance type:        1 = euclidean, 2 = diagonal, 3 = mahalanobis
+        scatter=0.2;
+        ntry=1;
+        
+        res = [];
+        coords = [83, 87, 100];
+        res(:,1) = coords';
+        rng = 1.1:0.1:3;
+        for i = 1:length(rng)
+            phi = rng(i);
+            [U, centroid, dist, W, obj] = run_fuzme(K,X,phi,maxiter,distype,toldif,scatter,ntry);
+            res(1,i+1) = max(U(coords(1),1), U(coords(1),2));
+            res(2,i+1) = min(U(coords(2),1), U(coords(2),2));
+            res(3,i+1) = min(U(coords(3),1), U(coords(3),2));
+        end;
+        
+        col = 'brg';
+        for i = 1:3
+        plot(rng,res(i,2:end)','-s','LineWidth',2,'color',col(i));
+        hold on;
+        end;
+        xlim([1 3.1]);
+        ylim([-0.05 1.05]);
+        ylabel('Partial Membership','FontSize',14, 'FontWeight','bold');
+        xlabel('Fuzzy Exponent','FontSize',14, 'FontWeight','bold');
+        set(gca,'fontsize',12,'FontWeight','bold');
+        grid on
+        legend(dat.lab(coords));
+        
+        keyboard
+        % Create PDFs and move to correct directory
+        print = 1
+        if print
+            outName = 'fuzzyVotes.eps';
+            exportfig(gcf,outName,'bounds','tight','color','rgb','lockAxes',0);
+            eps2pdf(outName)
+            system(sprintf('mv %s %s/pdf',outName,outDir));
+            ix = strfind(outName,'.');
+            system(sprintf('mv %s %s/pdf',strcat(outName(1:ix),'pdf'),outDir));
+        end;
+        
+    otherwise
+        error('no plotting routine');
+end;
+
+
+
+
+
+
+
+
+##### SOURCE END #####
+--></body></html>

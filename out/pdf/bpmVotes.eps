@@ -1,0 +1,673 @@
+%!PS-Adobe-2.0 EPSF-1.2
+%%Creator: MATLAB, The MathWorks, Inc. Version 7.12.0.635 (R2011a). Operating System: Darwin 11.4.2 Darwin Kernel Version 11.4.2: Thu Aug 23 16:25:48 PDT 2012; root:xnu-1699.32.7~1/RELEASE_X86_64 x86_64.
+%%Title: ./bpmVotes.eps
+%%CreationDate: 10/20/2012  01:09:24
+%%DocumentNeededFonts: Helvetica
+%%+ Helvetica-Bold
+%%DocumentProcessColors: Cyan Magenta Yellow Black
+%%Extensions: CMYK
+%%Pages: 1
+%%BoundingBox:  -265   200   893   594
+%%EndComments
+
+%%BeginProlog
+% MathWorks dictionary
+/MathWorks 160 dict begin
+% definition operators
+/bdef {bind def} bind def
+/ldef {load def} bind def
+/xdef {exch def} bdef
+/xstore {exch store} bdef
+% operator abbreviations
+/c  /clip ldef
+/cc /concat ldef
+/cp /closepath ldef
+/gr /grestore ldef
+/gs /gsave ldef
+/mt /moveto ldef
+/np /newpath ldef
+/cm /currentmatrix ldef
+/sm /setmatrix ldef
+/rm /rmoveto ldef
+/rl /rlineto ldef
+/s {show newpath} bdef
+/sc {setcmykcolor} bdef
+/sr /setrgbcolor ldef
+/sg /setgray ldef
+/w /setlinewidth ldef
+/j /setlinejoin ldef
+/cap /setlinecap ldef
+/rc {rectclip} bdef
+/rf {rectfill} bdef
+% page state control
+/pgsv () def
+/bpage {/pgsv save def} bdef
+/epage {pgsv restore} bdef
+/bplot /gsave ldef
+/eplot {stroke grestore} bdef
+% orientation switch
+/portraitMode 0 def /landscapeMode 1 def /rotateMode 2 def
+% coordinate system mappings
+/dpi2point 0 def
+% font control
+/FontSize 0 def
+/FMS {/FontSize xstore findfont [FontSize 0 0 FontSize neg 0 0]
+  makefont setfont} bdef
+/reencode {exch dup where {pop load} {pop StandardEncoding} ifelse
+  exch dup 3 1 roll findfont dup length dict begin
+  { 1 index /FID ne {def}{pop pop} ifelse } forall
+  /Encoding exch def currentdict end definefont pop} bdef
+/isroman {findfont /CharStrings get /Agrave known} bdef
+/FMSR {3 1 roll 1 index dup isroman {reencode} {pop pop} ifelse
+  exch FMS} bdef
+/csm {1 dpi2point div -1 dpi2point div scale neg translate
+ dup landscapeMode eq {pop -90 rotate}
+  {rotateMode eq {90 rotate} if} ifelse} bdef
+% line types: solid, dotted, dashed, dotdash
+/SO { [] 0 setdash } bdef
+/DO { [.5 dpi2point mul 4 dpi2point mul] 0 setdash } bdef
+/DA { [6 dpi2point mul] 0 setdash } bdef
+/DD { [.5 dpi2point mul 4 dpi2point mul 6 dpi2point mul 4
+  dpi2point mul] 0 setdash } bdef
+% macros for lines and objects
+/L {lineto stroke} bdef
+/MP {3 1 roll moveto 1 sub {rlineto} repeat} bdef
+/AP {{rlineto} repeat} bdef
+/PDlw -1 def
+/W {/PDlw currentlinewidth def setlinewidth} def
+/PP {closepath eofill} bdef
+/DP {closepath stroke} bdef
+/MR {4 -2 roll moveto dup  0 exch rlineto exch 0 rlineto
+  neg 0 exch rlineto closepath} bdef
+/FR {MR stroke} bdef
+/PR {MR fill} bdef
+/L1i {{currentfile picstr readhexstring pop} image} bdef
+/tMatrix matrix def
+/MakeOval {newpath tMatrix currentmatrix pop translate scale
+0 0 1 0 360 arc tMatrix setmatrix} bdef
+/FO {MakeOval stroke} bdef
+/PO {MakeOval fill} bdef
+/PD {currentlinewidth 2 div 0 360 arc fill
+   PDlw -1 eq not {PDlw w /PDlw -1 def} if} def
+/FA {newpath tMatrix currentmatrix pop translate scale
+  0 0 1 5 -2 roll arc tMatrix setmatrix stroke} bdef
+/PA {newpath tMatrix currentmatrix pop	translate 0 0 moveto scale
+  0 0 1 5 -2 roll arc closepath tMatrix setmatrix fill} bdef
+/FAn {newpath tMatrix currentmatrix pop translate scale
+  0 0 1 5 -2 roll arcn tMatrix setmatrix stroke} bdef
+/PAn {newpath tMatrix currentmatrix pop translate 0 0 moveto scale
+  0 0 1 5 -2 roll arcn closepath tMatrix setmatrix fill} bdef
+/vradius 0 def /hradius 0 def /lry 0 def
+/lrx 0 def /uly 0 def /ulx 0 def /rad 0 def
+/MRR {/vradius xdef /hradius xdef /lry xdef /lrx xdef /uly xdef
+  /ulx xdef newpath tMatrix currentmatrix pop ulx hradius add uly
+  vradius add translate hradius vradius scale 0 0 1 180 270 arc 
+  tMatrix setmatrix lrx hradius sub uly vradius add translate
+  hradius vradius scale 0 0 1 270 360 arc tMatrix setmatrix
+  lrx hradius sub lry vradius sub translate hradius vradius scale
+  0 0 1 0 90 arc tMatrix setmatrix ulx hradius add lry vradius sub
+  translate hradius vradius scale 0 0 1 90 180 arc tMatrix setmatrix
+  closepath} bdef
+/FRR {MRR stroke } bdef
+/PRR {MRR fill } bdef
+/MlrRR {/lry xdef /lrx xdef /uly xdef /ulx xdef /rad lry uly sub 2 div def
+  newpath tMatrix currentmatrix pop ulx rad add uly rad add translate
+  rad rad scale 0 0 1 90 270 arc tMatrix setmatrix lrx rad sub lry rad
+  sub translate rad rad scale 0 0 1 270 90 arc tMatrix setmatrix
+  closepath} bdef
+/FlrRR {MlrRR stroke } bdef
+/PlrRR {MlrRR fill } bdef
+/MtbRR {/lry xdef /lrx xdef /uly xdef /ulx xdef /rad lrx ulx sub 2 div def
+  newpath tMatrix currentmatrix pop ulx rad add uly rad add translate
+  rad rad scale 0 0 1 180 360 arc tMatrix setmatrix lrx rad sub lry rad
+  sub translate rad rad scale 0 0 1 0 180 arc tMatrix setmatrix
+  closepath} bdef
+/FtbRR {MtbRR stroke } bdef
+/PtbRR {MtbRR fill } bdef
+/stri 6 array def /dtri 6 array def
+/smat 6 array def /dmat 6 array def
+/tmat1 6 array def /tmat2 6 array def /dif 3 array def
+/asub {/ind2 exch def /ind1 exch def dup dup
+  ind1 get exch ind2 get sub exch } bdef
+/tri_to_matrix {
+  2 0 asub 3 1 asub 4 0 asub 5 1 asub
+  dup 0 get exch 1 get 7 -1 roll astore } bdef
+/compute_transform {
+  dmat dtri tri_to_matrix tmat1 invertmatrix 
+  smat stri tri_to_matrix tmat2 concatmatrix } bdef
+/ds {stri astore pop} bdef
+/dt {dtri astore pop} bdef
+/db {2 copy /cols xdef /rows xdef mul dup 3 mul string
+  currentfile exch readhexstring pop
+  dup 0 3 index getinterval /rbmap xdef
+  dup 2 index dup getinterval /gbmap xdef
+  1 index dup 2 mul exch getinterval /bbmap xdef pop pop}bdef
+/it {gs np dtri aload pop moveto lineto lineto cp c
+  cols rows 8 compute_transform 
+  rbmap gbmap bbmap true 3 colorimage gr}bdef
+/il {newpath moveto lineto stroke}bdef
+currentdict end def
+%%EndProlog
+
+%%BeginSetup
+MathWorks begin
+
+0 cap
+
+end
+%%EndSetup
+
+%%Page: 1 1
+%%BeginPageSetup
+%%PageBoundingBox:  -265   200   893   594
+MathWorks begin
+bpage
+%%EndPageSetup
+
+%%BeginObject: obj1
+bplot
+
+/dpi2point 12 def
+portraitMode -4944 7272 csm
+
+ 1763   142 13898  4723 MR c np
+87 dict begin %Colortable dictionary
+/c0 { 0.000000 0.000000 0.000000 sr} bdef
+/c1 { 1.000000 1.000000 1.000000 sr} bdef
+/c2 { 0.900000 0.000000 0.000000 sr} bdef
+/c3 { 0.000000 0.820000 0.000000 sr} bdef
+/c4 { 0.000000 0.000000 0.800000 sr} bdef
+/c5 { 0.910000 0.820000 0.320000 sr} bdef
+/c6 { 1.000000 0.260000 0.820000 sr} bdef
+/c7 { 0.000000 0.820000 0.820000 sr} bdef
+c0
+1 j
+1 sg
+   0    0 17251 5034 PR
+6 w
+0 4102 13368 0 0 -4102 2243 4479 4 MP
+PP
+-13368 0 0 4102 13368 0 0 -4102 2243 4479 5 MP stroke
+4 w
+DO
+0 sg
+2374 4479 mt 2374  377 L
+2374  377 mt 2374  377 L
+3684 4479 mt 3684  377 L
+3684  377 mt 3684  377 L
+4995 4479 mt 4995  377 L
+4995  377 mt 4995  377 L
+6305 4479 mt 6305  377 L
+6305  377 mt 6305  377 L
+7616 4479 mt 7616  377 L
+7616  377 mt 7616  377 L
+8927 4479 mt 8927  377 L
+8927  377 mt 8927  377 L
+10237 4479 mt 10237  377 L
+10237  377 mt 10237  377 L
+11548 4479 mt 11548  377 L
+11548  377 mt 11548  377 L
+12858 4479 mt 12858  377 L
+12858  377 mt 12858  377 L
+14169 4479 mt 14169  377 L
+14169  377 mt 14169  377 L
+15479 4479 mt 15479  377 L
+15479  377 mt 15479  377 L
+2243 4186 mt 15611 4186 L
+15611 4186 mt 15611 4186 L
+2243 3600 mt 15611 3600 L
+15611 3600 mt 15611 3600 L
+2243 3014 mt 15611 3014 L
+15611 3014 mt 15611 3014 L
+2243 2428 mt 15611 2428 L
+15611 2428 mt 15611 2428 L
+2243 1842 mt 15611 1842 L
+15611 1842 mt 15611 1842 L
+2243 1255 mt 15611 1255 L
+15611 1255 mt 15611 1255 L
+2243  669 mt 15611  669 L
+15611  669 mt 15611  669 L
+SO
+6 w
+2243 4479 mt 15611 4479 L
+2243  377 mt 15611  377 L
+2243 4479 mt 2243  377 L
+15611 4479 mt 15611  377 L
+2243 4479 mt 15611 4479 L
+2243 4479 mt 2243  377 L
+2374 4479 mt 2374 4345 L
+2374  377 mt 2374  510 L
+%%IncludeResource: font Helvetica
+/Helvetica /ISOLatin1Encoding 120 FMSR
+
+2341 4624 mt 
+(0) s
+3684 4479 mt 3684 4345 L
+3684  377 mt 3684  510 L
+3618 4624 mt 
+(10) s
+4995 4479 mt 4995 4345 L
+4995  377 mt 4995  510 L
+4929 4624 mt 
+(20) s
+6305 4479 mt 6305 4345 L
+6305  377 mt 6305  510 L
+6239 4624 mt 
+(30) s
+7616 4479 mt 7616 4345 L
+7616  377 mt 7616  510 L
+7550 4624 mt 
+(40) s
+8927 4479 mt 8927 4345 L
+8927  377 mt 8927  510 L
+8861 4624 mt 
+(50) s
+10237 4479 mt 10237 4345 L
+10237  377 mt 10237  510 L
+10171 4624 mt 
+(60) s
+11548 4479 mt 11548 4345 L
+11548  377 mt 11548  510 L
+11482 4624 mt 
+(70) s
+12858 4479 mt 12858 4345 L
+12858  377 mt 12858  510 L
+12792 4624 mt 
+(80) s
+14169 4479 mt 14169 4345 L
+14169  377 mt 14169  510 L
+14103 4624 mt 
+(90) s
+15479 4479 mt 15479 4345 L
+15479  377 mt 15479  510 L
+15379 4624 mt 
+(100) s
+2243 4186 mt 2376 4186 L
+15611 4186 mt 15477 4186 L
+2142 4230 mt 
+(0) s
+2243 3600 mt 2376 3600 L
+15611 3600 mt 15477 3600 L
+2042 3644 mt 
+(0.2) s
+2243 3014 mt 2376 3014 L
+15611 3014 mt 15477 3014 L
+2042 3058 mt 
+(0.4) s
+2243 2428 mt 2376 2428 L
+15611 2428 mt 15477 2428 L
+2042 2472 mt 
+(0.6) s
+2243 1842 mt 2376 1842 L
+15611 1842 mt 15477 1842 L
+2042 1886 mt 
+(0.8) s
+2243 1255 mt 2376 1255 L
+15611 1255 mt 15477 1255 L
+2142 1299 mt 
+(1) s
+2243  669 mt 2376  669 L
+15611  669 mt 15477  669 L
+2042  713 mt 
+(1.2) s
+2243 4479 mt 15611 4479 L
+2243  377 mt 15611  377 L
+2243 4479 mt 2243  377 L
+15611 4479 mt 15611  377 L
+gs 2243 376 13369 4104 MR c np
+120 w
+/c8 { 0.000000 1.000000 1.000000 sr} bdef
+c8
+131 0 131 0 131 -1 131 0 131 0 131 -1 131 -1 131 0 
+131 0 131 -1 131 -1 131 0 131 -2 131 0 131 -6 131 -1 
+132 -1 131 0 131 -5 131 -9 131 -3 131 -7 131 -1 131 -1 
+131 -2 131 -5 131 -16 131 -8 131 -3 131 -99 131 -20 131 -2 
+131 -40 132 -35 131 -33 131 -28 131 -54 131 -173 131 -49 131 -5 
+131 -41 131 -21 131 -5 131 -78 131 -137 131 -38 131 -248 131 -110 
+131 -114 131 -120 132 -11 131 -10 131 -101 131 -8 131 -361 131 -8 
+131 -40 131 -236 131 -101 131 -88 131 -63 131 -139 131 -89 131 -8 
+131 -29 131 -29 131 -22 132 -3 131 -7 131 -4 131 -10 131 -12 
+131 -4 131 -6 131 -1 131 -2 131 0 131 0 131 -4 131 0 
+131 -1 131 0 131 -1 131 0 132 0 131 -2 131 -2 131 0 
+131 0 131 0 131 0 131 -1 131 0 131 0 131 -1 131 0 
+131 0 131 0 131 0 2505 4185 100 MP stroke
+gr
+
+120 w
+c8
+/c9 { 1.000000 0.000000 0.000000 sr} bdef
+c9
+%%IncludeResource: font Helvetica-Bold
+/Helvetica-Bold /ISOLatin1Encoding 132 FMSR
+
+2553 4478 mt  -90 rotate
+(Smith \(R-NH\)\11) s
+90 rotate
+2684 4478 mt  -90 rotate
+(Nickles \(R-OK\)\11) s
+90 rotate
+2815 4478 mt  -90 rotate
+(Voinovich \(R-OH\)\11) s
+90 rotate
+2946 4478 mt  -90 rotate
+(Burns \(R-MT\)\11) s
+90 rotate
+3077 4478 mt  -90 rotate
+(Hagel \(R-NE\)\11) s
+90 rotate
+3208 4477 mt  -90 rotate
+(Enzi \(R-WY\)\11) s
+90 rotate
+3339 4477 mt  -90 rotate
+(Craig \(R-ID\)\11) s
+90 rotate
+3470 4477 mt  -90 rotate
+(Thurmond \(R-SC\)\11) s
+90 rotate
+3601 4476 mt  -90 rotate
+(Kyl \(R-AZ\)\11) s
+90 rotate
+3732 4476 mt  -90 rotate
+(McConnell \(R-KY\)\11) s
+90 rotate
+3863 4476 mt  -90 rotate
+(Allard \(R-CO\)\11) s
+90 rotate
+3994 4476 mt  -90 rotate
+(Domenici \(R-NM\)\11) s
+90 rotate
+4125 4476 mt  -90 rotate
+(Helms \(R-NC\)\11) s
+90 rotate
+4256 4474 mt  -90 rotate
+(Inhofe \(R-OK\)\11) s
+90 rotate
+4387 4472 mt  -90 rotate
+(Hatch \(R-UT\)\11) s
+90 rotate
+4519 4472 mt  -90 rotate
+(Thomas \(R-WY\)\11) s
+90 rotate
+4650 4472 mt  -90 rotate
+(Cochran \(R-MS\)\11) s
+90 rotate
+4781 4471 mt  -90 rotate
+(Santorum \(R-PA\)\11) s
+90 rotate
+4912 4471 mt  -90 rotate
+(Gramm \(R-TX\)\11) s
+90 rotate
+5043 4470 mt  -90 rotate
+(Hutchison \(R-TX\)\11) s
+90 rotate
+5174 4470 mt  -90 rotate
+(Brownback \(R-KS\)\11) s
+90 rotate
+5305 4466 mt  -90 rotate
+(Gregg \(R-NH\)\11) s
+90 rotate
+5436 4466 mt  -90 rotate
+(Bunning \(R-KY\)\11) s
+90 rotate
+5567 4466 mt  -90 rotate
+(Murkowski \(R-AK\)\11) s
+90 rotate
+5698 4464 mt  -90 rotate
+(Lott \(R-MS\)\11) s
+90 rotate
+5829 4463 mt  -90 rotate
+(Frist \(R-TN\)\11) s
+90 rotate
+5960 4457 mt  -90 rotate
+(Ensign \(R-NV\)\11) s
+90 rotate
+6091 4453 mt  -90 rotate
+(Bennett \(R-UT\)\11) s
+90 rotate
+6222 4441 mt  -90 rotate
+(Stevens \(R-AK\)\11) s
+90 rotate
+6353 4431 mt  -90 rotate
+(Grassley \(R-IA\)\11) s
+90 rotate
+6484 4427 mt  -90 rotate
+(Roberts \(R-KS\)) s
+90 rotate
+6615 4420 mt  -90 rotate
+(Sessions \(R-AL\)\11) s
+90 rotate
+6747 4417 mt  -90 rotate
+(Thompson \(R-TN\)\11) s
+90 rotate
+6878 4395 mt  -90 rotate
+(Allen \(R-VA\)\11) s
+90 rotate
+7009 4366 mt  -90 rotate
+(Crapo \(R-ID\)\11) s
+90 rotate
+7140 4337 mt  -90 rotate
+(Bond \(R-MO\)\11) s
+90 rotate
+7271 4329 mt  -90 rotate
+(Lugar \(R-IN\)\11) s
+90 rotate
+7402 4240 mt  -90 rotate
+(Campbell \(R-CO\)\11) s
+90 rotate
+7533 4101 mt  -90 rotate
+(Hutchinson \(R-AR\)\11) s
+90 rotate
+7664 4038 mt  -90 rotate
+(Shelby \(R-AL\)\11) s
+90 rotate
+7795 3950 mt  -90 rotate
+(Warner \(R-VA\)\11) s
+90 rotate
+7926 3849 mt  -90 rotate
+(DeWine \(R-OH\)\11) s
+90 rotate
+8057 3613 mt  -90 rotate
+(Fitzgerald \(R-IL\)\11) s
+90 rotate
+8188 3573 mt  -90 rotate
+(Smith \(R-OR\)\11) s
+90 rotate
+8319 3565 mt  -90 rotate
+(McCain \(R-AZ\)\11) s
+90 rotate
+8450 3204 mt  -90 rotate
+(Collins \(R-ME\)\11) s
+90 rotate
+8581 3196 mt  -90 rotate
+(Snowe \(R-ME\)\11) s
+90 rotate
+/c10 { 0.000000 0.000000 1.000000 sr} bdef
+c10
+8712 3095 mt  -90 rotate
+(Miller \(D-GA\)\11) s
+90 rotate
+0 sg
+8843 3085 mt  -90 rotate
+(outcome) s
+90 rotate
+c9
+8975 3074 mt  -90 rotate
+(Specter \(R-PA\)\11) s
+90 rotate
+9106 2954 mt  -90 rotate
+(Chafee \(R-RI\)\11) s
+90 rotate
+c10
+9237 2840 mt  -90 rotate
+(Nelson \(D-NE\)\11) s
+90 rotate
+9368 2730 mt  -90 rotate
+(Breaux \(D-LA\)\11) s
+90 rotate
+9499 2482 mt  -90 rotate
+(Baucus \(D-MT\)\11) s
+90 rotate
+9630 2444 mt  -90 rotate
+(Hollings \(D-SC\)\11) s
+90 rotate
+9761 2307 mt  -90 rotate
+(Lincoln \(D-AR\)\11) s
+90 rotate
+/c11 { 1.000000 0.000000 1.000000 sr} bdef
+c11
+9892 2229 mt  -90 rotate
+(Jeffords \(I-VT\)\11) s
+90 rotate
+c10
+10023 2224 mt  -90 rotate
+(Landrieu \(D-LA\)\11) s
+90 rotate
+10154 2203 mt  -90 rotate
+(Cleland \(D-GA\)\11) s
+90 rotate
+10285 2162 mt  -90 rotate
+(Bayh \(D-IN\)\11) s
+90 rotate
+10416 2157 mt  -90 rotate
+(Carper \(D-DE\)\11) s
+90 rotate
+10547 2108 mt  -90 rotate
+(Torricelli \(D-NJ\)\11) s
+90 rotate
+10678 1935 mt  -90 rotate
+(Feinstein \(D-CA\)\11) s
+90 rotate
+10809 1881 mt  -90 rotate
+(Graham \(D-FL\)\11) s
+90 rotate
+10940 1853 mt  -90 rotate
+(Nelson \(D-FL\)\11) s
+90 rotate
+11071 1820 mt  -90 rotate
+(Johnson \(D-SD\)\11) s
+90 rotate
+11203 1785 mt  -90 rotate
+(Byrd \(D-WV\)\11) s
+90 rotate
+11334 1745 mt  -90 rotate
+(Kohl \(D-WI\)\11) s
+90 rotate
+11465 1743 mt  -90 rotate
+(Bingaman \(D-NM\)\11) s
+90 rotate
+11596 1723 mt  -90 rotate
+(Dorgan \(D-ND\)\11) s
+90 rotate
+11727 1624 mt  -90 rotate
+(Reid \(D-NV\)\11) s
+90 rotate
+11858 1621 mt  -90 rotate
+(Kerry \(D-MA\)\11) s
+90 rotate
+11989 1613 mt  -90 rotate
+(Edwards \(D-NC\)\11) s
+90 rotate
+12120 1597 mt  -90 rotate
+(Murray \(D-WA\)\11) s
+90 rotate
+12251 1592 mt  -90 rotate
+(Carnahan \(D-MO\)\11) s
+90 rotate
+12382 1590 mt  -90 rotate
+(Wyden \(D-OR\)\11) s
+90 rotate
+12513 1589 mt  -90 rotate
+(Lieberman \(D-CT\)\11) s
+90 rotate
+12644 1588 mt  -90 rotate
+(Biden \(D-DE\)\11) s
+90 rotate
+12775 1581 mt  -90 rotate
+(Stabenow \(D-MI\)\11) s
+90 rotate
+12906 1578 mt  -90 rotate
+(Cantwell \(D-WA\)\11) s
+90 rotate
+13037 1569 mt  -90 rotate
+(Dodd \(D-CT\)\11) s
+90 rotate
+13168 1564 mt  -90 rotate
+(Rockefeller \(D-WV\)\11) s
+90 rotate
+13299 1564 mt  -90 rotate
+(Inouye \(D-HI\)\11) s
+90 rotate
+13431 1563 mt  -90 rotate
+(Boxer \(D-CA\)\11) s
+90 rotate
+13562 1562 mt  -90 rotate
+(Harkin \(D-IA\)\11) s
+90 rotate
+13693 1556 mt  -90 rotate
+(Clinton \(D-NY\)\11) s
+90 rotate
+13824 1556 mt  -90 rotate
+(Levin \(D-MI\)\11) s
+90 rotate
+13955 1554 mt  -90 rotate
+(Feingold \(D-WI\)\11) s
+90 rotate
+14086 1554 mt  -90 rotate
+(Durbin \(D-IL\)\11) s
+90 rotate
+14217 1553 mt  -90 rotate
+(Corzine \(D-NJ\)\11) s
+90 rotate
+14348 1552 mt  -90 rotate
+(Kennedy \(D-MA\)\11) s
+90 rotate
+14479 1552 mt  -90 rotate
+(Mikulski \(D-MD\)\11) s
+90 rotate
+14610 1552 mt  -90 rotate
+(Dayton \(D-MN\)\11) s
+90 rotate
+14741 1551 mt  -90 rotate
+(Leahy \(D-VT\)\11) s
+90 rotate
+14872 1550 mt  -90 rotate
+(Conrad \(D-ND\)\11) s
+90 rotate
+15003 1550 mt  -90 rotate
+(Akaka \(D-HI\)\11) s
+90 rotate
+15134 1550 mt  -90 rotate
+(Sarbanes \(D-MD\)\11) s
+90 rotate
+15265 1549 mt  -90 rotate
+(Daschle \(D-SD\)\11) s
+90 rotate
+15396 1549 mt  -90 rotate
+(Reed \(D-RI\)\11) s
+90 rotate
+15527 1549 mt  -90 rotate
+(Schumer \(D-NY\)\11) s
+90 rotate
+0 sg
+%%IncludeResource: font Helvetica-Bold
+/Helvetica-Bold /ISOLatin1Encoding 168 FMSR
+
+1949 3202 mt  -90 rotate
+(Partial Membership) s
+90 rotate
+8613 4802 mt 
+(Senator) s
+6 w
+
+end %%Color Dict
+
+eplot
+%%EndObject
+
+epage
+end
+
+showpage
+
+%%Trailer
+%%EOF

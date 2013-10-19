@@ -1,0 +1,274 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Bayesian Partial Membership</title><meta name="generator" content="MATLAB 7.14"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2013-02-26"><meta name="DC.source" content="demo_BPM.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+
+  </style></head><body><div class="content"><h1>Bayesian Partial Membership</h1><!--introduction--><p>Generate samples for the Bayesian Partial Membership model using Hybrid Monte Carlo sampling.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Model Setup</a></li><li><a href="#2">Load Data</a></li><li><a href="#3">Run EFA</a></li><li><a href="#4">Posterior Analysis</a></li></ul></div><h2>Model Setup<a name="1"></a></h2><p>Specify the data to use and the number of latent factors K. We generate 5000 samples. All HMC settings are specified in the configuration file.</p><pre class="codeinput">dataName = <span class="string">'bpmmodel'</span>;
+model = <span class="string">'bpm'</span>;
+K = 3;
+seed = 10;
+
+[dataDir, outDir] = setupDir;
+fileName = sprintf([outDir <span class="string">'/%s/%s_%s_%d_%d'</span>], dataName,model, <span class="string">'hmc'</span>, K, seed);
+
+options = getConfigEFLVM(dataName, model);
+burnin = options.burnin;
+thin = options.thin;
+saveOut = options.saveout;
+setSeed(seed);
+</pre><h2>Load Data<a name="2"></a></h2><pre class="codeinput">data = getBinData(dataName, dataDir);
+[N,D] = size(data.X);
+</pre><h2>Run EFA<a name="3"></a></h2><p>Load a previously stored results if available</p><pre class="codeinput">disp(<span class="string">'Running HMC ...'</span>);
+<span class="keyword">if</span> ~exist([fileName,<span class="string">'.mat'</span>],<span class="string">'file'</span>)
+    <span class="comment">%exptEFLVM(dataName,model,K, seed);</span>
+    inferFun = @inferBPM_hmc;
+    predFun = @predProbBPM_mcmc;
+
+    <span class="comment">% Run HMC for few steps</span>
+    postDist = inferFun(data, options, K);
+
+    <span class="comment">% Save</span>
+    <span class="keyword">if</span> saveOut, save(fileName, <span class="string">'postDist'</span>, <span class="string">'seed'</span>); <span class="keyword">end</span>
+
+    <span class="comment">% Test error</span>
+    <span class="keyword">if</span> isfield(data,<span class="string">'miss'</span>)
+        <span class="comment">% only test if testing data exists</span>
+        [teErr, rmse, pHat] = predFun(data, postDist.samples, K, burnin, thin);
+        <span class="keyword">if</span> saveOut
+            save(fileName,<span class="string">'teErr'</span>, <span class="string">'rmse'</span>,<span class="string">'-append'</span>);
+        <span class="keyword">end</span>;
+    <span class="keyword">end</span>;
+<span class="keyword">end</span>;
+
+res = load(fileName);
+</pre><pre class="codeoutput">Running HMC ...
+</pre><h2>Posterior Analysis<a name="4"></a></h2><p>1. Comparing true vs inferred partial memberships</p><pre class="codeinput">figure;
+[S,LL] = size(res.postDist.samples);
+gg = zeros(N,N);
+burnin = 2000; thin = 50;
+rng = burnin:thin:S;
+<span class="keyword">for</span> i = rng
+    omega = res.postDist.samples(i,:);
+    [~, ~, pi, ~] = extractParams_bpm(omega, K, N, D);
+    gg = gg + pi*pi';
+<span class="keyword">end</span>;
+GG = gg/length(rng);
+TP = data.truePi*data.truePi';
+
+r = 1; c = 2;
+h1 = subplot(r,c,1);
+imagesc(TP,[0 1]);
+title(<span class="string">'True U_T'</span>,<span class="string">'FontSize'</span>,14, <span class="string">'FontWeight'</span>,<span class="string">'bold'</span>)
+xlabel(<span class="string">'Observations'</span>,<span class="string">'FontSize'</span>,14, <span class="string">'FontWeight'</span>,<span class="string">'bold'</span>);
+ylabel(<span class="string">'Observations'</span>,<span class="string">'FontSize'</span>,14, <span class="string">'FontWeight'</span>,<span class="string">'bold'</span>);
+set(gca,<span class="string">'xticklabel'</span>,[],<span class="string">'yticklabel'</span>,[]);
+ht = colorbar(<span class="string">'location'</span>,<span class="string">'EastOutside'</span>);
+set(ht,<span class="string">'FontSize'</span>,12);
+axis <span class="string">square</span>;
+
+h2 = subplot(r,c,2);
+imagesc(GG,[0 1]);
+title(<span class="string">'Inferred U_L'</span>,<span class="string">'FontSize'</span>,14, <span class="string">'FontWeight'</span>,<span class="string">'bold'</span>)
+set(gca,<span class="string">'xticklabel'</span>,[],<span class="string">'yticklabel'</span>,[]);
+<span class="comment">% colormap gray;</span>
+xlabel(<span class="string">'Observations'</span>,<span class="string">'FontSize'</span>,14, <span class="string">'FontWeight'</span>,<span class="string">'bold'</span>);
+ylabel(<span class="string">'Observations'</span>,<span class="string">'FontSize'</span>,14, <span class="string">'FontWeight'</span>,<span class="string">'bold'</span>);
+ht = colorbar(<span class="string">'location'</span>,<span class="string">'EastOutside'</span>);
+set(ht,<span class="string">'FontSize'</span>,12);
+axis <span class="string">square</span>;
+</pre><img vspace="5" hspace="5" src="demo_BPM_01.png" alt=""> <p>2. Histogram of Differences between above plots</p><pre class="codeinput">figure;
+diff = abs(GG(:) - TP(:));
+rng = 0.1:0.1:0.5;
+counts = histc(diff,rng);
+perc = counts./sum(counts);
+disp(<span class="string">'Cumulative Histogram Table'</span>);
+disp({<span class="string">'Perc. Values'</span>,<span class="string">'Difference'</span>});
+disp([cumsum(perc)*100 rng']); <span class="comment">% Print table instead</span>
+
+bar(rng,perc,<span class="string">'FaceColor'</span>,<span class="string">'b'</span>);
+title(<span class="string">'Histogram of Differences |U_T - U_L|'</span>,<span class="string">'FontSize'</span>,14, <span class="string">'FontWeight'</span>,<span class="string">'bold'</span>);
+set(gca,<span class="string">'xtick'</span>,rng,<span class="string">'xticklabel'</span>,rng, <span class="string">'FontSize'</span>,12)
+xlim([0 0.55]); ylim([0 0.6]);
+set(gca,<span class="string">'xtick'</span>,rng);
+xlabel(<span class="string">'Difference threshold'</span>,<span class="string">'FontSize'</span>,14, <span class="string">'FontWeight'</span>,<span class="string">'bold'</span>);
+ylabel(<span class="string">'% entries in bin'</span>,<span class="string">'FontSize'</span>,14, <span class="string">'FontWeight'</span>,<span class="string">'bold'</span>)
+daspect([1 1 1])
+</pre><pre class="codeoutput">Cumulative Histogram Table
+    'Perc. Values'    'Difference'
+
+           56          0.1
+       88.571          0.2
+       99.429          0.3
+          100          0.4
+          100          0.5
+
+</pre><img vspace="5" hspace="5" src="demo_BPM_02.png" alt=""> <p>Shakir Mohamed, 2012</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.14<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Bayesian Partial Membership
+% Generate samples for the Bayesian Partial Membership model using Hybrid
+% Monte Carlo sampling.
+
+%% Model Setup
+% Specify the data to use and the number of latent factors K. We generate
+% 5000 samples. All HMC settings are specified in the configuration file.
+
+dataName = 'bpmmodel';
+model = 'bpm';
+K = 3;
+seed = 10;
+
+[dataDir, outDir] = setupDir;
+fileName = sprintf([outDir '/%s/%s_%s_%d_%d'], dataName,model, 'hmc', K, seed);
+
+options = getConfigEFLVM(dataName, model);
+burnin = options.burnin;
+thin = options.thin;
+saveOut = options.saveout;
+setSeed(seed);
+
+%% Load Data
+data = getBinData(dataName, dataDir);
+[N,D] = size(data.X);
+
+%% Run EFA
+% Load a previously stored results if available
+disp('Running HMC ...');
+if ~exist([fileName,'.mat'],'file')
+    %exptEFLVM(dataName,model,K, seed);
+    inferFun = @inferBPM_hmc;
+    predFun = @predProbBPM_mcmc;
+    
+    % Run HMC for few steps
+    postDist = inferFun(data, options, K);
+    
+    % Save
+    if saveOut, save(fileName, 'postDist', 'seed'); end
+    
+    % Test error
+    if isfield(data,'miss')
+        % only test if testing data exists
+        [teErr, rmse, pHat] = predFun(data, postDist.samples, K, burnin, thin);
+        if saveOut
+            save(fileName,'teErr', 'rmse','-append');
+        end;
+    end;
+end;
+
+res = load(fileName);
+
+%% Posterior Analysis
+% 1. Comparing true vs inferred partial memberships
+
+figure;
+[S,LL] = size(res.postDist.samples);
+gg = zeros(N,N);
+burnin = 2000; thin = 50;
+rng = burnin:thin:S;
+for i = rng
+    omega = res.postDist.samples(i,:);
+    [~, ~, pi, ~] = extractParams_bpm(omega, K, N, D);
+    gg = gg + pi*pi';
+end;
+GG = gg/length(rng);
+TP = data.truePi*data.truePi';
+
+r = 1; c = 2;
+h1 = subplot(r,c,1);
+imagesc(TP,[0 1]);
+title('True U_T','FontSize',14, 'FontWeight','bold')
+xlabel('Observations','FontSize',14, 'FontWeight','bold');
+ylabel('Observations','FontSize',14, 'FontWeight','bold');
+set(gca,'xticklabel',[],'yticklabel',[]);
+ht = colorbar('location','EastOutside');
+set(ht,'FontSize',12);
+axis square;
+
+h2 = subplot(r,c,2);
+imagesc(GG,[0 1]);
+title('Inferred U_L','FontSize',14, 'FontWeight','bold')
+set(gca,'xticklabel',[],'yticklabel',[]);
+% colormap gray;
+xlabel('Observations','FontSize',14, 'FontWeight','bold');
+ylabel('Observations','FontSize',14, 'FontWeight','bold');
+ht = colorbar('location','EastOutside');
+set(ht,'FontSize',12);
+axis square;
+
+%%
+% 2. Histogram of Differences between above plots
+figure;
+diff = abs(GG(:) - TP(:));
+rng = 0.1:0.1:0.5;
+counts = histc(diff,rng);
+perc = counts./sum(counts);
+disp('Cumulative Histogram Table');
+disp({'Perc. Values','Difference'});
+disp([cumsum(perc)*100 rng']); % Print table instead
+
+bar(rng,perc,'FaceColor','b');
+title('Histogram of Differences |U_T - U_L|','FontSize',14, 'FontWeight','bold');
+set(gca,'xtick',rng,'xticklabel',rng, 'FontSize',12)
+xlim([0 0.55]); ylim([0 0.6]);
+set(gca,'xtick',rng);
+xlabel('Difference threshold','FontSize',14, 'FontWeight','bold');
+ylabel('% entries in bin','FontSize',14, 'FontWeight','bold')
+daspect([1 1 1])
+
+%%
+% Shakir Mohamed, 2012
+
+##### SOURCE END #####
+--></body></html>

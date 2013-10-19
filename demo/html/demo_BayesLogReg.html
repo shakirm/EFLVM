@@ -1,0 +1,227 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Hybrid Monte Carlo Sampling for Bayesian Logistic Regression</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-10-21"><meta name="DC.source" content="demo_BayesLogReg.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h1>Hybrid Monte Carlo Sampling for Bayesian Logistic Regression</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Load data</a></li><li><a href="#2">Hyperparameters</a></li><li><a href="#3">HMC Settings</a></li><li><a href="#4">Initialisation</a></li><li><a href="#5">Running HMC</a></li><li><a href="#6">Posterior Analysis</a></li></ul></div><h2>Load data<a name="1"></a></h2><p>The variable 'data' is returned as a struct with covariates X of size NxD and labels Y of size Nx1.</p><pre class="codeinput">setSeed(1);
+[dataDir, outDir] = setupDir;
+
+data = getBinData(<span class="string">'ripley'</span>, dataDir);
+[N, D] = size(data.X);
+</pre><h2>Hyperparameters<a name="2"></a></h2><p>Hypers should be a struct with any hyperparameters needed for the model. Also useful to send the dimensions of the data. These dimensions are useful for models such as Factor Analysis where we must also specify the number of latent dimensions. Also, where we are sampling more than one parameter (e.g., again factor analysis, sampling both factor and coefficients), these dimensions allow us to index correctly.</p><pre class="codeinput">hypers.dims.N = N;
+hypers.dims.D = D;
+hypers.alpha = 1;
+</pre><h2>HMC Settings<a name="3"></a></h2><p>Specify a log probability function, which return the the joint probability and the first derivative with respect to all parameters that are to be sampled.</p><pre class="codeinput">logprob = @bayesLogReg;
+
+nSamples = 200;
+burnin = 100;
+
+<span class="comment">% These are parameters to set for HMC</span>
+options = struct(<span class="keyword">...</span>
+    <span class="string">'nSamples'</span>, nSamples, <span class="keyword">...</span>
+    <span class="string">'nLeaps'</span>,  200, <span class="keyword">...</span>
+    <span class="string">'stepSize'</span>, 0.1, <span class="keyword">...</span>
+    <span class="string">'display'</span>,0);
+</pre><h2>Initialisation<a name="4"></a></h2><p>Here we add one dimension for the bias term.</p><pre class="codeinput">options.initVec = rand(D+1,1);
+</pre><h2>Running HMC<a name="5"></a></h2><pre class="codeinput">disp(<span class="string">'Running HMC ...'</span>);
+[samples, stats] = hmc(logprob, data, hypers, options);
+</pre><pre class="codeoutput">Running HMC ...
+
+HMC Complete
+</pre><h2>Posterior Analysis<a name="6"></a></h2><p>1. Trace Plots examining the bias and params.</p><pre class="codeinput">figure;
+subplot(3,1,1);
+plot(samples(:,1), <span class="string">'LineWidth'</span>,2);
+ylabel(<span class="string">'Bias'</span>);
+subplot(3,1,2)
+plot(samples(:,2), <span class="string">'LineWidth'</span>,2);
+ylabel(<span class="string">'Slope 1'</span>);
+subplot(3,1,3)
+plot(samples(:,3), <span class="string">'LineWidth'</span>,2);
+ylabel(<span class="string">'Slope 2'</span>); xlabel(<span class="string">'Sample'</span>);
+snapnow;
+</pre><img vspace="5" hspace="5" src="demo_BayesLogReg_01.png" alt=""> <p>2. Effective Sample Size</p><pre class="codeinput">ESS = CalculateESS(samples(burnin+1:end,:), nSamples - burnin -1);
+disp(<span class="string">'ESS Values: [bias slope1 slope2]'</span>);
+disp(ESS);
+</pre><pre class="codeoutput">ESS Values: [bias slope1 slope2]
+       91.037          100       81.595
+
+</pre><p>3. Compare Parameter Estimates</p><pre class="codeinput">betaMean = mean(samples);
+B = mnrfit(data.X,data.Y+1);
+disp({<span class="string">'Post Mean'</span>, <span class="string">'Max Lik'</span>})
+disp([betaMean' -B])
+</pre><pre class="codeoutput">    'Post Mean'    'Max Lik'
+
+     -0.11374     -0.12281
+      0.80188      0.89296
+       2.6634       2.9799
+
+</pre><p>4. Parameter Histograms</p><pre class="codeinput">figure;
+col = getColorsRGB;
+<span class="keyword">for</span> i = 1:size(samples,2)
+    <span class="comment">% subplot(1,3,i);</span>
+    [n, xout] = hist(samples(burnin+1:end,i));
+    bar(xout,n./sum(n),<span class="string">'FaceColor'</span>,col(i,:));
+    axis <span class="string">square</span>; hold <span class="string">on</span>;
+    [f, xi] = ksdensity(samples(burnin+1:end,i));
+    plot(xi,f,<span class="string">'LineWidth'</span>,2,<span class="string">'Color'</span>,<span class="string">'k'</span>);
+    grid <span class="string">on</span>;
+<span class="keyword">end</span>;
+snapnow;
+</pre><img vspace="5" hspace="5" src="demo_BayesLogReg_02.png" alt=""> <p>Shakir Mohamed, 2012</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Hybrid Monte Carlo Sampling for Bayesian Logistic Regression
+%
+
+%% Load data
+% The variable 'data' is returned as a struct with covariates X of size NxD 
+% and labels Y of size Nx1.
+setSeed(1);
+[dataDir, outDir] = setupDir;
+
+data = getBinData('ripley', dataDir);
+[N, D] = size(data.X);
+
+%% Hyperparameters
+% Hypers should be a struct with any hyperparameters needed for the model.
+% Also useful to send the dimensions of the data. These dimensions are
+% useful for models such as Factor Analysis where we must also specify the
+% number of latent dimensions. Also, where we are sampling more than one
+% parameter (e.g., again factor analysis, sampling both factor and
+% coefficients), these dimensions allow us to index correctly.
+hypers.dims.N = N;
+hypers.dims.D = D;
+hypers.alpha = 1;
+
+%% HMC Settings
+% Specify a log probability function, which return the the joint
+% probability and the first derivative with respect to all parameters that
+% are to be sampled.
+
+logprob = @bayesLogReg;
+
+nSamples = 200;
+burnin = 100;
+
+% These are parameters to set for HMC
+options = struct(...
+    'nSamples', nSamples, ...
+    'nLeaps',  200, ...
+    'stepSize', 0.1, ...
+    'display',0);
+            
+%% Initialisation
+% Here we add one dimension for the bias term.
+options.initVec = rand(D+1,1);
+
+%% Running HMC
+disp('Running HMC ...');
+[samples, stats] = hmc(logprob, data, hypers, options);
+
+%% Posterior Analysis
+
+%%
+% 1. Trace Plots examining the bias and params.
+figure;
+subplot(3,1,1);
+plot(samples(:,1), 'LineWidth',2);
+ylabel('Bias'); 
+subplot(3,1,2)
+plot(samples(:,2), 'LineWidth',2);
+ylabel('Slope 1');
+subplot(3,1,3)
+plot(samples(:,3), 'LineWidth',2);
+ylabel('Slope 2'); xlabel('Sample');
+snapnow;
+
+%%
+% 2. Effective Sample Size
+ESS = CalculateESS(samples(burnin+1:end,:), nSamples - burnin -1);
+disp('ESS Values: [bias slope1 slope2]');
+disp(ESS);
+
+%%
+% 3. Compare Parameter Estimates
+betaMean = mean(samples);
+B = mnrfit(data.X,data.Y+1);
+disp({'Post Mean', 'Max Lik'})
+disp([betaMean' -B])
+
+%%
+% 4. Parameter Histograms
+figure;
+col = getColorsRGB;
+for i = 1:size(samples,2)
+    % subplot(1,3,i); 
+    [n, xout] = hist(samples(burnin+1:end,i));
+    bar(xout,n./sum(n),'FaceColor',col(i,:));
+    axis square; hold on;
+    [f, xi] = ksdensity(samples(burnin+1:end,i));
+    plot(xi,f,'LineWidth',2,'Color','k');
+    grid on;
+end;
+snapnow;
+
+%%
+% Shakir Mohamed, 2012
+##### SOURCE END #####
+--></body></html>
